@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
+import { Header } from "../shared/ui/header/header";
 
 import "./globals.css";
 
@@ -23,7 +24,7 @@ export default function RootLayout({
         <div className="flex min-h-screen bg-gray-50">
           {/* Sidebar */}
           <div className="flex-1 flex flex-col">
-            {/* Header */}
+            <Header />
             <main className="flex-1 overflow-auto py-8 px-4">
               <div className="max-w-7xl mx-auto">{children}</div>
             </main>
