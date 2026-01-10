@@ -22,6 +22,7 @@ export function Header() {
               alt={user.name}
               width={40}
               height={40}
+              priority
             />
             <span className="text-gray-700 font-medium">{user.name}</span>
             <svg
