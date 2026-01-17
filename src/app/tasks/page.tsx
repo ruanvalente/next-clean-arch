@@ -1,4 +1,4 @@
-import { TaskListWidget } from "@/src/presentation/features/tasks/widgets/task-list-widget";
+import { TaskListWidget } from "@/src/features/tasks/widgets/task-list-widget";
 
 export default function TasksPage() {
   return <TaskListWidget />;
