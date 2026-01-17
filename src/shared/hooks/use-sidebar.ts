@@ -1,50 +1,37 @@
 "use client";
 
 import { useEffect } from "react";
-import { storageService } from "../services/storage.service";
 import { useSidebarStore } from "../store/sidebar.store";
 
-const SIDEBAR_KEY = "sidebarOpen";
-const BREAKPOINT = "(max-width: 767px)";
+const MOBILE_BREAKPOINT = "(max-width: 767px)";
 
 export function useSidebar() {
   const { isOpen, isMobile, navItems, setIsMobile, setOpen, toggle } =
     useSidebarStore();
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(BREAKPOINT);
+    if (typeof window === "undefined") return;
 
-    setIsMobile(mediaQuery.matches);
+    const mql = window.matchMedia(MOBILE_BREAKPOINT);
 
-    if (mediaQuery.matches) {
-      setOpen(false);
-    } else {
-      const stored = storageService.get<boolean>(SIDEBAR_KEY);
-      setOpen(stored ?? true);
-    }
+    const handleChange = (e: MediaQueryListEvent | MediaQueryList) => {
+      const mobile = e.matches;
+      setIsMobile(mobile);
 
-    const handler = (event: MediaQueryListEvent) => {
-      setIsMobile(event.matches);
+      if (mobile) {
+        setOpen(false);
+      }
     };
 
-    mediaQuery.addEventListener("change", handler);
-    return () => mediaQuery.removeEventListener("change", handler);
+    handleChange(mql);
+
+    mql.addEventListener("change", handleChange);
+    return () => mql.removeEventListener("change", handleChange);
   }, [setIsMobile, setOpen]);
-
-  useEffect(() => {
-    if (isMobile) {
-      setOpen(false);
-    }
-  }, [isMobile, setOpen]);
-
-  useEffect(() => {
-    if (!isMobile) {
-      storageService.set(SIDEBAR_KEY, isOpen);
-    }
-  }, [isOpen, isMobile]);
 
   return {
     isOpen,
+    isMobile,
     navItems,
     toggle,
   };
