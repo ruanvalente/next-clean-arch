@@ -23,8 +23,22 @@ export let tasksMemory: Array<Task> = [
   },
 ];
 
-export function toggleTaskMemory(id: string) {
-  tasksMemory = tasksMemory.map((task) =>
-    task.id === id ? { ...task, completed: !task.completed } : task
-  );
+/**
+ * Change state of completed task
+ * @param id - Task ID
+ * @returns Updated Task or undefined if not found
+ */
+export function toggleTaskMemory(id: string): Task | undefined {
+  const taskIndex = tasksMemory.findIndex((task) => task.id === id);
+
+  if (taskIndex === -1) {
+    return undefined;
+  }
+
+  const task = tasksMemory[taskIndex];
+  const updatedTask = { ...task, completed: !task.completed };
+
+  tasksMemory[taskIndex] = updatedTask;
+
+  return updatedTask;
 }
