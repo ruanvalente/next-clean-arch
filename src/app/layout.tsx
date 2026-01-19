@@ -1,5 +1,8 @@
+import { cookies } from "next/headers";
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
+
+import { ThemeProvider } from "next-themes";
 
 import { Header } from "../shared/ui/header/header";
 import { SidebarComponent } from "../shared/ui/sidebar";
@@ -22,8 +25,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookie = await cookies();
+  const theme = cookie.get("theme")?.value || "system";
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      data-theme={theme}
+      className={theme}
+      suppressHydrationWarning
+    >
       <body className={`${roboto.variable} antialiased`}>
         <div className="flex min-h-screen bg-gray-50">
           <SidebarComponent.Root>
@@ -36,7 +46,17 @@ export default async function RootLayout({
           <div className="flex-1 flex flex-col">
             <Header />
             <main className="flex-1 overflow-auto py-8 px-4">
-              <div className="max-w-7xl mx-auto">{children}</div>
+              <div className="max-w-7xl mx-auto">
+                <ThemeProvider
+                  attribute="class"
+                  defaultTheme="system"
+                  enableSystem
+                  disableTransitionOnChange
+                  enableColorScheme
+                >
+                  {children}
+                </ThemeProvider>
+              </div>
             </main>
           </div>
         </div>
