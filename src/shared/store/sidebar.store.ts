@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { SIDEBAR_KEY } from "../config/constants/storage.config";
+import { persist } from "zustand/middleware";
 
 type NavItem = {
   label: string;
@@ -16,17 +18,27 @@ type SidebarState = {
   setOpen: (value: boolean) => void;
 }
 
-export const useSidebarStore = create<SidebarState>((set) => ({
-  isOpen: true,
-  isMobile: false,
+export const useSidebarStore = create<SidebarState>()(
+  persist(
+    (set, get) => ({
+      isOpen: true,
+      isMobile: false,
+      navItems: [
+        { label: "Dashboard", route: "/dashboard", icon: ''},
+        { label: "Tarefas", route: "/tasks", icon: ''},
+        { label: "Configurações", route: "/settings", icon: ''},
+      ],
 
-  navItems: [
-    { label: "Dashboard", icon: "🏠", route: "/dashboard" },
-    { label: "Tasks", icon: "✓", route: "/tasks" },
-    { label: "Configurations", icon: "⚙", route: "/settings" },
-  ],
-
-  setIsMobile: (value) => set({ isMobile: value }),
-  setOpen: (value) => set({ isOpen: value }),
-  toggle: () => set((s) => ({ isOpen: !s.isOpen })),
-}));
+      setIsMobile: (mobile: boolean) => set({ isMobile: mobile }),
+      setOpen: (open: boolean) => set({ isOpen: open }),
+      toggle: () => set({ isOpen: !get().isOpen }),
+    }),
+    {
+      name: SIDEBAR_KEY,
+      partialize: (state: SidebarState) => ({ isOpen: state.isOpen }),
+      // onRehydrateStorage: (state) => {
+      //   console.log("Store rehydrated!", state);
+      // },
+    }
+  )
+);
